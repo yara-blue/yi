@@ -15,5 +15,8 @@
 		  type = "app";
 		  program = "${self.packages.x86_64-linux.default}/bin/yi";
 	  };
+	  overlays.default = final: prev: {
+		  yi = self.packages.x86_64-linux.default;
+	  };
     };
 }
