@@ -37,3 +37,14 @@ vim.api.nvim_create_user_command(
 	lsp.setup_rustc_dev,
 	{ desc = "configure the rust-analyzer lsp for rustc development" }
 )
+
+-- see `:h lua-guide-commands-create`
+vim.api.nvim_create_user_command(
+	"RustFeature",
+	function(opts) lsp.add_flag_to_rust_analyzer(opts.fargs) end,
+	{ 
+		nargs = 1,
+		complete = lsp.list_crate_features,
+		desc = "adds a feature flag to rust-analyzer's config and restarts it" 
+	}
+)

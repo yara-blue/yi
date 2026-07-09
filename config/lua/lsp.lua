@@ -224,5 +224,52 @@ function M.setup_rustc_dev()
 	-- print(vim.inspect(settings))
 end
 
+function M.add_flag_to_rust_analyzer(features)
+	vim.lsp.config('rust-analyzer', {
+		cmd = { "rust-analyzer" },
+		root_markers = { 'Cargo.toml' },
+		filetypes = { 'rust' },
+		capabilities = capabilities,
+		settings = {
+			["rust-analyzer"] = {
+				assist = {
+					importMergeBehavior = "module",
+					importGranularity = "module",
+				},
+				cargo = {
+					loadOutDirsFromCheck = true,
+					features = features,
+				},
+				procMacro = {
+					enable = true,
+				},
+			},
+		}
+	})
+
+	vim.api.nvim_command('LspRestart')
+end
+
+function M.list_crate_features() 
+	local shell_cmd = [[cat Cargo.toml | rg "name\s*=\s*\"(.+?)\"" -r '$1' | head -n 1]]
+	local crate = vim.system({"sh", "-c", shell_cmd}):wait()
+	local crate = crate.stdout:sub(1, -2)
+
+	local shell_cmd = "cargo info "..crate.." --offline -v"
+	local out = vim.system({"sh", "-c", shell_cmd}):wait()
+	local out = vim.split(out.stdout, "features:\n", { plain=true })
+	local out = vim.split(out[2], "\ndependencies:", {plain = true})
+	local out = vim.split(out[1], "\n")
+
+	local features = {}
+	for i, feature in ipairs(out) do 
+		if not vim.startswith(feature, " +") then
+			features[#features+1] = string.match(out[i], '[^ ]+', 2)
+		end
+	end
+
+	print(vim.inspect(features))
+	return features
+end
 
 return M

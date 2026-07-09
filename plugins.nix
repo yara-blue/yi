@@ -1,5 +1,15 @@
 { pkgs }:
 let
+  lzn = pkgs.vimUtils.buildVimPlugin {
+    name = "lzn";
+    src = pkgs.fetchFromGitHub {
+      owner = "lumen-oss";
+      repo = "lz.n";
+      rev = "bfd420e5b0ab95245094c8b3032c140941604223";
+      hash = "sha256-7vX8K6M7OvrCbLj4LRbsm00Xb8nn/OdcBX+TnP3XTMc=";
+    };
+  };
+
   # Add all the dependencies of a plugin to the list
   foldPlugins = builtins.foldl' (
     acc: next:
@@ -12,17 +22,25 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
+  lzn # enables "lazy" loading (from opt instead of start)
+
+  vim-startuptime
+
+  plenary-nvim # dependency of telescope-nvim
+  which-key-nvim
+  nvim-surround
+
+  nvim-cmp
+  cmp-nvim-lsp
+  gitsigns-nvim
+  fidget-nvim
+  lualine-nvim
+
   popup-nvim
 
-  # Themes
-  tokyonight-nvim
-  solarized-nvim
-  gruvbox-material
-
   # Looks
-  # vim-highlightedyank TODO replace with: 
+  # vim-highlightedyank TODO replace with:
   # https://stackoverflow.com/questions/26069278/highlight-copied-area-in-vim
-  gitsigns-nvim
   lualine-nvim
   lualine-lsp-progress
   nvim-web-devicons
@@ -30,16 +48,14 @@ pkgs.lib.unique (foldPlugins [
   vim-jjdescription
   mini-base16
 
+  solarized-nvim
+  gruvbox-material
+  tokyonight-nvim
+
   # Tools
-  nvim-tree-lua
-  telescope-nvim
-  telescope-fzf-native-nvim
-  telescope-ui-select-nvim
   # telescope-sg # ast graph seach/regex Nonfree + I don't really use it
   harpoon2
   which-key-nvim
-  lsp_lines-nvim
-  fidget-nvim
   nvim-lint
   crates-nvim
 
@@ -53,7 +69,6 @@ pkgs.lib.unique (foldPlugins [
   typst-preview-nvim
 
   # Nouns, Verbs, textobjects
-  comment-nvim
   nvim-surround
   vim-repeat
   vim-textobj-user # TODO do we still need this?
@@ -64,13 +79,5 @@ pkgs.lib.unique (foldPlugins [
   nvim-treesitter-context
   nvim-treesitter-textobjects
 
-  # Completions
-  luasnip
-  nvim-cmp
-  cmp-nvim-lsp
-  cmp-nvim-lsp-signature-help
-  cmp-buffer
-  cmp-path
-  cmp-cmdline
-  cmp_luasnip
+
 ])

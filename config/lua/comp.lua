@@ -1,7 +1,8 @@
 local ls = require("luasnip") 
 local types = require "luasnip.util.types"
 -- require("luasnip/loaders/from_vscode").lazy_load({ override_priority = 800 }) -- default prio is 1000
-require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/lua/snippets" })
+local loaders = require("luasnip.loaders.from_lua")
+loaders.lazy_load({ paths = "~/.config/nvim/lua/snippets" })
 
 require('crates').setup({
     lsp = {

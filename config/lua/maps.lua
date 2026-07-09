@@ -43,9 +43,6 @@ vim.keymap.set('n', "<leader>n", vim.diagnostic.goto_next)
 -- show issues for the current line
 vim.keymap.set('n', "<leader>l", function() vim.diagnostic.open_float({ scope = "line" }) end)
 
--- toggle file tree
-vim.keymap.set('n', "<leader>t", require("nvim-tree.api").tree.toggle)
-
 -- Code actions
 -- extract function/code
 -- general code action (impl class, fill match)
@@ -57,13 +54,12 @@ vim.keymap.set('n', "r", [[<Plug>(leap-forward)]])
 vim.keymap.set('n', "R", [[<Plug>(leap-backward)]])
 
 -- Harpoon
-local harpoon = require("harpoon")
 for i = 1, 5, 1 do
-	local fn = function() harpoon:list().select(i) end
+	local fn = function() require("harpoon"):list().select(i) end
 	vim.keymap.set('n', "<C-" .. tostring(i + 5) .. ">", fn)
 end
-vim.keymap.set({ 'n', 'i' }, "<A-7>", function() harpoon:list():add() end)
-vim.keymap.set({ 'n', 'i' }, "<A-5>", function() harpoon.ui.toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set({ 'n', 'i' }, "<A-7>", function() require("harpoon"):list():add() end)
+vim.keymap.set({ 'n', 'i' }, "<A-5>", function() require("harpoon").ui.toggle_quick_menu(harpoon:list()) end)
 
 vim.keymap.set({ 'n', 'i' }, "<A-6>", func.open_terminal)
 
@@ -75,45 +71,49 @@ vim.keymap.set('n', "<leader>f", vim.lsp.buf.format)
 vim.keymap.set('n', "cr", vim.lsp.buf.rename)
 
 -- git diff at cursor
-vim.keymap.set('n', "<leader>hp", require 'gitsigns'.preview_hunk)
+vim.keymap.set('n', "<leader>hp", function() require("gitsigns").preview_hunk() end)
 
 
 -- Telescopes
-local builtin = require("telescope.builtin")
 --  resume previous picker
-vim.keymap.set('n', "\\\\", builtin.resume)
+vim.keymap.set('n', "\\\\", function() require("scopes").resume() end)
 --  live grep over files
-vim.keymap.set('n', "<leader>o", builtin.find_files)
+vim.keymap.set('n', "<leader>o", function() require("scopes").find_files() end)
 --  live grep through all files
-vim.keymap.set('n', "<leader>r", builtin.live_grep)
+vim.keymap.set('n', "<leader>r", function() require("scopes").live_grep() end)
 --  pick a buffer
-vim.keymap.set('n', "<leader>b", builtin.buffers)
+vim.keymap.set('n', "<leader>b", function() require("scopes").buffers() end)
 --  list symbols in the current workspace
-vim.keymap.set('n', "<leader>s", builtin.lsp_workspace_symbols)
---  live grep through changes made by you
-vim.keymap.set('n', "<leader>g", grep_diff_me.scope)
+vim.keymap.set('n', "<leader>s", function() require("scopes").lsp_workspace_symbols() end)
+-- --  live grep through changes made by you
+-- vim.keymap.set('n', "<leader>g", grep_diff_me.scope)
 
 -- list all lsp:
 -- errors, warning and errors, everything
-vim.keymap.set('n', "<leader>e", function() builtin.diagnostics({ severity = 'Error' }) end)
-vim.keymap.set('n', "<leader>w", function() builtin.diagnostics({ severity = 'Warning' }) end)
-vim.keymap.set('n', "<leader>i", function() builtin.diagnostics({ severity = 'Hint' }) end)
+vim.keymap.set('n', "<leader>e", function() require("scopes").diagnostics({ severity = 'Error' }) end)
+vim.keymap.set('n', "<leader>w", function() require("scopes").diagnostics({ severity = 'Warning' }) end)
+vim.keymap.set('n', "<leader>i", function() require("scopes").diagnostics({ severity = 'Hint' }) end)
 
 -- list for current buffer:
 -- lsp errors, warning and errors, everything
-vim.keymap.set('n', "<leader>E", function() builtin.diagnostics({ bufnr = 0, severity = 'Error' }) end)
-vim.keymap.set('n', "<leader>W", function() builtin.diagnostics({ bufnr = 0, severity = 'Warning' }) end)
-vim.keymap.set('n', "<leader>I", function() builtin.diagnostics({ bufnr = 0, severity = 'Hint' }) end)
+vim.keymap.set('n', "<leader>E", function() require("scopes").diagnostics({ bufnr = 0, severity = 'Error' }) end)
+vim.keymap.set('n', "<leader>W", function() require("scopes").diagnostics({ bufnr = 0, severity = 'Warning' }) end)
+vim.keymap.set('n', "<leader>I", function() require("scopes").diagnostics({ bufnr = 0, severity = 'Hint' }) end)
 
 -- list lsp references for word under cursor
-vim.keymap.set('n', "gr", builtin.lsp_references)
+vim.keymap.set('n', "gr", function() require("scopes").lsp_references() end)
 -- list lsp implementations for word under cursor
-vim.keymap.set('n', "gi", builtin.lsp_implementations)
+vim.keymap.set('n', "gi", function() require("scopes").lsp_implementations() end)
+
 -- list snippets to edit (go edit snippets)
-vim.keymap.set('n', "ges", function() require("luasnip.loaders").edit_snippet_files() end)
+vim.keymap.set('n', "ges", function() 
+	require("scopes") -- lazy loads telescope (needed as luasnip ui)
+	require("luasnip.loaders").edit_snippet_files() 
+end)
 
 --  pick a function definition
 vim.keymap.set('n', "<leader>u", func.func_def_scope)
+
 
 -- make item more public
 vim.keymap.set({ 'n', 'i' }, "<A-0>", func.more_pub)
@@ -129,8 +129,8 @@ for dir, resize_str in pairs({ up = "-", down = "+", left = ">", right = "<" }) 
 	vim.keymap.set({ 'n', 'i', 't' }, "<A-" .. dir .. ">", resize_magic .. resize_str)
 end
 
-local ls = require("luasnip")
 local function choice_node()
+	local ls = require("luasnip")
 	if ls.choice_active() then
 		ls.change_choice(1)
 	end

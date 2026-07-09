@@ -3,6 +3,7 @@ require("lint").linters_by_ft = {
 }
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	once = true,
   callback = function()
 
     -- try_lint without arguments runs the linters defined in `linters_by_ft`

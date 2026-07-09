@@ -1,3 +1,23 @@
+-- require("lz.n").load({
+--
+-- 	{
+-- 		  "tokyonight-nvim",
+-- 		  colorscheme = ["tokyonight", "tokyonight-day", "tokyonight-moon", "tokyonight-night", "tokyonight-storm"],
+-- 		  
+-- 	  },
+-- 	-- {
+-- 	-- 	"luasnip",
+-- 	-- 	event = "InsertEnter",
+-- 	-- }
+--
+-- 	-- {
+-- 	--   "telescope-nvim",
+-- 	--   keys = {
+-- 	-- 	"\\\\", require("telescope.builtin").resume(), mode = "n",
+-- 	--   }
+-- 	  -- },
+-- })
+
 -- local execute = vim.api.nvim_command
 -- local fn = vim.fn
 --
