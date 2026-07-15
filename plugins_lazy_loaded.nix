@@ -12,17 +12,12 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
-  telescope-nvim
-  telescope-fzf-native-nvim
-  telescope-ui-select-nvim
+  # telescope-nvim
+  # telescope-fzf-native-nvim
+  # telescope-ui-select-nvim
 
   comment-nvim
 
   # Completions
   luasnip
-  cmp-nvim-lsp-signature-help
-  cmp-buffer
-  cmp-path
-  cmp-cmdline
-  cmp_luasnip
 ])

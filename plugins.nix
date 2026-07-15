@@ -1,15 +1,5 @@
 { pkgs }:
 let
-  lzn = pkgs.vimUtils.buildVimPlugin {
-    name = "lzn";
-    src = pkgs.fetchFromGitHub {
-      owner = "lumen-oss";
-      repo = "lz.n";
-      rev = "bfd420e5b0ab95245094c8b3032c140941604223";
-      hash = "sha256-7vX8K6M7OvrCbLj4LRbsm00Xb8nn/OdcBX+TnP3XTMc=";
-    };
-  };
-
   # Add all the dependencies of a plugin to the list
   foldPlugins = builtins.foldl' (
     acc: next:
@@ -22,19 +12,14 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
-  lzn # enables "lazy" loading (from opt instead of start)
-
   vim-startuptime
 
   plenary-nvim # dependency of telescope-nvim
   which-key-nvim
   nvim-surround
 
-  nvim-cmp
-  cmp-nvim-lsp
   gitsigns-nvim
   fidget-nvim
-  lualine-nvim
 
   popup-nvim
 
@@ -79,5 +64,10 @@ pkgs.lib.unique (foldPlugins [
   nvim-treesitter-context
   nvim-treesitter-textobjects
 
+  blink-cmp
 
+
+  telescope-nvim
+  telescope-fzf-native-nvim
+  telescope-ui-select-nvim
 ])

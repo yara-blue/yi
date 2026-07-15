@@ -15,11 +15,7 @@ require("treesitter")
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function()
 		vim.api.nvim_command(":packadd! luasnip")
-		vim.api.nvim_command(":packadd! cmp-nvim-lsp-signature-help")
-		vim.api.nvim_command(":packadd! cmp-buffer")
-		vim.api.nvim_command(":packadd! cmp-path")
-		vim.api.nvim_command(":packadd! cmp-cmdline")
-		vim.api.nvim_command(":packadd! cmp_luasnip")
+		vim.api.nvim_command(":packadd! blink-cmp")
 		require("comp") -- completions and snippets
 	end,
 	once = true

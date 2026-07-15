@@ -4,6 +4,15 @@ local types = require "luasnip.util.types"
 local loaders = require("luasnip.loaders.from_lua")
 loaders.lazy_load({ paths = "~/.config/nvim/lua/snippets" })
 
+require('blink.cmp').setup({
+	snippets = { preset = 'luasnip' },
+	fuzzy = { implementation = "prefer_rust_with_warning" },
+	cmdline = {
+	  keymap = { preset = 'inherit' },
+	  completion = { menu = { auto_show = true } },
+	},
+})
+
 require('crates').setup({
     lsp = {
         enabled = true,
@@ -37,62 +46,4 @@ ls.config.setup({
 	ext_base_prio = 300,
 	-- minimal increase in priority.
 	ext_prio_increase = 1,
-})
-
-local cmp = require("cmp")
-local func = require "functions"
-cmp.setup({
-	snippet = {
-		expand = function(args)
-			ls.lsp_expand(args.body)
-		end,
-	},
-	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
-		{ name = "nvim_lsp_signature_help" },
-		{ name = "luasnip" },
-		{ name = "buffer" },
-	}),
-
-	-- Use buffer source for `/`.
-	cmp.setup.cmdline("/", {
-		sources = {
-			{ name = "buffer" },
-		},
-	}),
-
-	-- Use cmdline & path source for ':'.
-	cmp.setup.cmdline(":", {
-		sources = cmp.config.sources({
-			{ name = "path" },
-		}, {
-			{ name = "cmdline", max_item_count = 15 },
-		}),
-	}),
-
-	mapping = cmp.mapping.preset.insert({
-		["<CR>"] = cmp.mapping.confirm({ select = false }),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if ls.expand_or_locally_jumpable() then
-				ls.expand_or_jump()
-			elseif func.has_words_before() then
-				cmp.complete()
-			else
-				fallback()
-			end
-		end, {
-			"i",
-			"s",
-		}),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if ls.jumpable(-1) then
-				ls.jump(-1)
-			else
-				fallback()
-			end
-		end, {
-			"i",
-			"s",
-		}),
-	}),
 })

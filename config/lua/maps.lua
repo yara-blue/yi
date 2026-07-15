@@ -77,7 +77,7 @@ vim.keymap.set('n', "<leader>hp", function() require("gitsigns").preview_hunk() 
 -- Telescopes
 --  resume previous picker
 vim.keymap.set('n', "\\\\", function() require("scopes").resume() end)
---  live grep over files
+-- live grep over files
 vim.keymap.set('n', "<leader>o", function() require("scopes").find_files() end)
 --  live grep through all files
 vim.keymap.set('n', "<leader>r", function() require("scopes").live_grep() end)

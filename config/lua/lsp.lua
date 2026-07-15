@@ -35,14 +35,14 @@ M = {}
 
 local function config_and_enable()
 	local existing_on_attach = (vim.lsp.config['rust-analyzer'] or {}).on_attach
-	local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 	-- capabilities.textDocument.completion.completionItem.snippetSupport = true
 	
 	vim.lsp.config('rust-analyzer', {
 		cmd = { "rust-analyzer" },
 		root_markers = { 'Cargo.toml' },
 		filetypes = { 'rust' },
-		capabilities = capabilities,
+		-- capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
 				assist = {
@@ -138,7 +138,7 @@ end
 config_and_enable()
 
 function M.setup_rustc_dev()
-	local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 	local workspace = vim.fs.root(0, 'x.py')
 	if workspace == nil then 
@@ -156,7 +156,7 @@ function M.setup_rustc_dev()
 		-- cmd = {"env", "RA_LOG=debug", "rust-analyzer"},
 		cmd = { "rust-analyzer"},
 		root_dir = workspace,
-		capabilities = capabilities,
+		-- capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
 				linkedProjects = {

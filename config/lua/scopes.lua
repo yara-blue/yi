@@ -1,4 +1,3 @@
-
 -- these names are dirs in <nix store path>/packpath/pack/plugins-from-nixpkgs/opt
 -- (find the path to packpath by inspecting the shell wrapper)
 vim.api.nvim_command(":packadd! telescope.nvim")
