@@ -1,6 +1,6 @@
-vim.api.nvim_command(":packadd! luasnip")
+vim.api.nvim_command(":packadd luasnip")
 
-local ls = require("luasnip") 
+local ls = require("luasnip")
 local types = require "luasnip.util.types"
 -- require("luasnip/loaders/from_vscode").lazy_load({ override_priority = 800 }) -- default prio is 1000
 local loaders = require("luasnip.loaders.from_lua")

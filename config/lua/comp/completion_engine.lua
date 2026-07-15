@@ -1,4 +1,5 @@
-vim.api.nvim_command(":packadd! blink.cmp")
+vim.api.nvim_command(":packadd blink.cmp")
+vim.api.nvim_command(":packadd blink-cmp-yanky")
 
 require('blink.cmp').setup({
 	snippets = { preset = 'luasnip' },
@@ -7,5 +8,13 @@ require('blink.cmp').setup({
 	  keymap = { preset = 'inherit' },
 	  completion = { menu = { auto_show = true } },
 	},
+	sources = {
+		default = { "lsp", "path", "buffer", "snippets", "yank" },
+		providers = {
+			yank = {
+				name = "yank",
+				module = "blink-yanky",
+			},
+		},
+	},
 })
-

@@ -12,8 +12,6 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
-  vim-startuptime
-
   plenary-nvim # dependency of telescope-nvim
   which-key-nvim
   nvim-surround
@@ -24,8 +22,6 @@ pkgs.lib.unique (foldPlugins [
   popup-nvim
 
   # Looks
-  # vim-highlightedyank TODO replace with:
-  # https://stackoverflow.com/questions/26069278/highlight-copied-area-in-vim
   lualine-nvim
   lualine-lsp-progress
   nvim-web-devicons
@@ -50,7 +46,6 @@ pkgs.lib.unique (foldPlugins [
   leap-nvim
   # pkgs.unstable.vimPlugins.neomutt-vim
   nvim-lspconfig
-  typst-preview-nvim
 
   # Nouns, Verbs, textobjects
   nvim-surround

@@ -13,6 +13,7 @@ in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
   blink-cmp
+  blink-cmp-yanky
 
   telescope-nvim
   telescope-fzf-native-nvim
@@ -20,6 +21,9 @@ pkgs.lib.unique (foldPlugins [
 
   crates-nvim
   comment-nvim
+  yanky-nvim
+
+  typst-preview-nvim
 
   # Completions
   luasnip
