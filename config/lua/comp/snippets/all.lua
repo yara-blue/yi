@@ -77,6 +77,7 @@ local snips = {}
 add_greek_alphabet_snips(snips)
 add_money_snips(snips)
 snips[#snips + 1] = date_snippet()
-require("snippets/helpers_all/todo")(snips)
+-- Injected by LuaSnips, see: https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#reloading-when-editing-required-files
+ls_tracked_dopackage("comp.snippets.helpers_all.todo")(snips)
 
 return snips, {}

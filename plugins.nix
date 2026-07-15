@@ -42,7 +42,6 @@ pkgs.lib.unique (foldPlugins [
   harpoon2
   which-key-nvim
   nvim-lint
-  crates-nvim
 
   # Text tools
   vim-easy-align
@@ -63,11 +62,4 @@ pkgs.lib.unique (foldPlugins [
   nvim-treesitter.withAllGrammars
   nvim-treesitter-context
   nvim-treesitter-textobjects
-
-  blink-cmp
-
-
-  telescope-nvim
-  telescope-fzf-native-nvim
-  telescope-ui-select-nvim
 ])

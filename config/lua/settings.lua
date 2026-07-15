@@ -46,7 +46,7 @@ g.tex_flavor = "latex"
 -- undo
 local undodir = vim.env.HOME .. "/.vimdid"
 -- ensure the folder exists (runs async)
-vim.system({"mkdir", "-p", undodir}, {text = true}) 
+vim.system({"mkdir", "-p", undodir}) 
 o.undodir = undodir
 o.undofile = true --permanent undo
 

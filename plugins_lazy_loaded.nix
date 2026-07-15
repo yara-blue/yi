@@ -12,10 +12,13 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
-  # telescope-nvim
-  # telescope-fzf-native-nvim
-  # telescope-ui-select-nvim
+  blink-cmp
 
+  telescope-nvim
+  telescope-fzf-native-nvim
+  telescope-ui-select-nvim
+
+  crates-nvim
   comment-nvim
 
   # Completions

@@ -11,14 +11,13 @@ require("looks")
 require("gui_tools")
 require("text_tools")
 require("treesitter")
+require("comp") -- completions and snippets
 
-vim.api.nvim_create_autocmd("InsertEnter", {
+vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function()
-		vim.api.nvim_command(":packadd! luasnip")
-		vim.api.nvim_command(":packadd! blink-cmp")
-		require("comp") -- completions and snippets
+		require("lsp")
 	end,
 	once = true
 })
-require("lsp")
+-- require("lsp")
 -- require("debuggers") -- debugger adapter

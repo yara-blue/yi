@@ -1,6 +1,3 @@
-local func = require("functions")
-local lsp = require("lsp")
-
 vim.api.nvim_create_user_command(
 	"LuaSnipEdit",
 	function() require("luasnip.loaders.from_lua").edit_snippet_files() end,
@@ -9,19 +6,19 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
 	"Unmap",
-	func.undo_custom_remaps,
+	function() require("functions").undo_custom_remaps() end,
 	{ desc = "undo custom remappings" }
 )
 
 vim.api.nvim_create_user_command(
 	"Remap",
-	func.apply_custom_remaps,
+	function() require("functions").apply_custom_remaps() end,
 	{ desc = "redo custom remappings" }
 )
 
 vim.api.nvim_create_user_command(
 	"LspCodeAction",
-	func.lsp_code_action_by_prefix,
+	function() require("functions").lsp_code_action_by_prefix() end,
 	{
 		nargs = 1,
 		desc = "perform the lsp code action that matches the provided prefix",
@@ -34,17 +31,17 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
 	"RustcDev",
-	lsp.setup_rustc_dev,
+	function() require("lsp").setup_rustc_dev() end,
 	{ desc = "configure the rust-analyzer lsp for rustc development" }
 )
 
 -- see `:h lua-guide-commands-create`
 vim.api.nvim_create_user_command(
 	"RustFeature",
-	function(opts) lsp.add_flag_to_rust_analyzer(opts.fargs) end,
+	function(opts) require("lsp").add_flag_to_rust_analyzer(opts.fargs) end,
 	{ 
 		nargs = 1,
-		complete = lsp.list_crate_features,
+		complete = function() require("lsp").list_crate_features() end,
 		desc = "adds a feature flag to rust-analyzer's config and restarts it" 
 	}
 )
