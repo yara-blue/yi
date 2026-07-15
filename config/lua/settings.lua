@@ -44,16 +44,11 @@ o.termguicolors = true
 g.tex_flavor = "latex"
 
 -- undo
-vim.system({"echo", "-n", "$HOME/.vimdid"}, { text = true }, function(obj) 
-	local undodir = obj.stdout
-	-- ensure the folder exists (runs async)
-	vim.system({"mkdir", "-p", undodir}, {text = true}) 
-
-	vim.schedule(function() 
-		o.undodir = undodir .. "//" -- appending // makes vim use it?
-		o.undofile = true --permanent undo
-	end)
-end)
+local undodir = vim.env.HOME .. "/.vimdid"
+-- ensure the folder exists (runs async)
+vim.system({"mkdir", "-p", undodir}, {text = true}) 
+o.undodir = undodir
+o.undofile = true --permanent undo
 
 -- make comments italic
 vim.api.nvim_exec([[
