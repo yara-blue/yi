@@ -22,7 +22,7 @@ o.softtabstop = 0
 o.shiftwidth = 4
 o.autoindent = true
 o.smartindent = true
-o.foldmethod = "syntax"
+o.foldmethod = "manual" --later overridden with treesitter (lazy enabled)
 o.foldenable = true
 o.foldlevel = 1
 o.foldlevelstart = 99
@@ -45,8 +45,7 @@ g.tex_flavor = "latex"
 
 -- undo
 local undodir = vim.env.HOME .. "/.vimdid"
--- ensure the folder exists (runs async)
-vim.system({"mkdir", "-p", undodir}) 
+vim.fn.mkdir(undodir, "p")
 o.undodir = undodir
 o.undofile = true --permanent undo
 

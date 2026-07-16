@@ -1,8 +1,9 @@
 -- these names are dirs in <nix store path>/packpath/pack/plugins-from-nixpkgs/opt
 -- (find the path to packpath by inspecting the shell wrapper)
-vim.api.nvim_command(":packadd telescope.nvim")
-vim.api.nvim_command(":packadd telescope-fzf-native.nvim")
-vim.api.nvim_command(":packadd telescope-ui-select.nvim")
+vim.cmd.packadd("plenary-nvim")
+vim.cmd.packadd("telescope.nvim")
+vim.cmd.packadd("telescope-fzf-native.nvim")
+vim.cmd.packadd("telescope-ui-select.nvim")
 
 local actions = require("telescope.actions")
 require("telescope").setup({

@@ -1,4 +1,4 @@
-vim.api.nvim_command(":packadd luasnip")
+vim.cmd.packadd("luasnip")
 
 local ls = require("luasnip")
 local types = require "luasnip.util.types"

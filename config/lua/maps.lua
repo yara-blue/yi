@@ -1,6 +1,4 @@
 local func = require("functions")
-local grep_diff_me = require("grep_diff_me")
-grep_diff_me.setup({"%.stderr", "%.stdout"}) -- FIXME why does this not work?
 local lsp_helpers = require("lsp_helpers")
 
 vim.g.mapleader = " "
@@ -86,7 +84,7 @@ vim.keymap.set('n', "<leader>b", function() require("scopes").buffers() end)
 --  list symbols in the current workspace
 vim.keymap.set('n', "<leader>s", function() require("scopes").lsp_workspace_symbols() end)
 -- --  live grep through changes made by you
--- vim.keymap.set('n', "<leader>g", grep_diff_me.scope)
+vim.keymap.set('n', "<leader>g", function() require("grep_diff_me").scope() end)
 
 -- list all lsp:
 -- errors, warning and errors, everything

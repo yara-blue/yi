@@ -1,5 +1,5 @@
-vim.api.nvim_command(":packadd blink.cmp")
-vim.api.nvim_command(":packadd blink-cmp-yanky")
+vim.cmd.packadd("blink.cmp")
+vim.cmd.packadd("blink-cmp-yanky")
 
 require('blink.cmp').setup({
 	snippets = { preset = 'luasnip' },

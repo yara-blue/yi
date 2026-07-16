@@ -204,4 +204,7 @@ function M.scope()
 	}):find()
 end
 
+
+M.setup({"%.stderr", "%.stdout"})
+
 return M

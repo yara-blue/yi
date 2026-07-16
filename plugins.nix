@@ -12,20 +12,12 @@ let
 in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
-  plenary-nvim # dependency of telescope-nvim
-  which-key-nvim
-  nvim-surround
-
-  gitsigns-nvim
-  fidget-nvim
-
   popup-nvim
 
   # Looks
   lualine-nvim
   lualine-lsp-progress
   nvim-web-devicons
-  vim-jjdescription
   mini-base16
 
   solarized-nvim
@@ -35,22 +27,15 @@ pkgs.lib.unique (foldPlugins [
   # Tools
   # telescope-sg # ast graph seach/regex Nonfree + I don't really use it
   harpoon2
-  which-key-nvim
   nvim-lint
+  which-key-nvim
 
   # Text tools
-  vim-easy-align
 
   # Other
-  leap-nvim
+  leap-nvim # lazy loads itself
   # pkgs.unstable.vimPlugins.neomutt-vim
   nvim-lspconfig
-
-  # Nouns, Verbs, textobjects
-  nvim-surround
-  vim-repeat
-  vim-textobj-user # TODO do we still need this?
-  # vim-textobj-ident
 
   # Tree sitter
   nvim-treesitter.withAllGrammars

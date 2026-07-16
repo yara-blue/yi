@@ -1,4 +1,20 @@
-require("gitsigns").setup()
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = vim.schedule_wrap(function()
+	vim.cmd.packadd("gitsigns.nvim")
+	vim.cmd.packadd("fidget.nvim")
+	require("gitsigns").setup()
+	require("fidget").setup{
+		notification = {
+			window = {
+				relative = "win",
+				winblend = 20,
+				zindex = nil,
+			}
+		}
+	}
+  end),
+})
 
 local M = {}
 
@@ -53,13 +69,13 @@ local lualine_inactive_sections = {
 
 function M:lualine(theme)
 	if theme ~= nil then
-	require("lualine").setup({
-		options = {
-			theme = theme,
-		},
-		sections = lualine_sections,
-		inactive_sections = lualine_inactive_sections,
-	})
+		require("lualine").setup({
+			options = {
+				theme = theme,
+			},
+			sections = lualine_sections,
+			inactive_sections = lualine_inactive_sections,
+		})
 	else 
 		require("lualine").setup({
 			sections = lualine_sections,
@@ -68,15 +84,5 @@ function M:lualine(theme)
 		})
 	end
 end
-
-require("fidget").setup{
-	notification = {
-		window = {
-			relative = "win",
-			winblend = 20,
-			zindex = nil,
-		}
-	}
-}
 
 return M

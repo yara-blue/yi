@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	once = true,
 	pattern = "*.typst",
 	callback = function()
-		vim.api.nvim_command(":packadd typst-preview.nvim")
+		vim.cmd.packadd("typst-preview.nvim")
 		require("typst-preview").setup {
 			debug = false,
 			open_cmd = 'firefox %s -P typst-preview --class typst-preview',

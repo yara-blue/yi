@@ -15,15 +15,25 @@ pkgs.lib.unique (foldPlugins [
   blink-cmp
   blink-cmp-yanky
 
+  plenary-nvim # dependency of telescope-nvim
   telescope-nvim
   telescope-fzf-native-nvim
   telescope-ui-select-nvim
+
+  gitsigns-nvim
+  fidget-nvim
 
   crates-nvim
   comment-nvim
   yanky-nvim
 
   typst-preview-nvim
+
+  # Nouns, Verbs, textobjects
+  nvim-surround
+  vim-repeat
+  vim-jjdescription
+  vim-easy-align
 
   # Completions
   luasnip

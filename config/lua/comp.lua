@@ -7,9 +7,9 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = { 'Cargo.toml' },
 	callback = function()
-		vim.api.nvim_command(":packadd crates.nvim")
-		pattern = { 'Cargo.toml' },
+		vim.cmd.packadd("crates.nvim")
 		require('crates').setup({
 			lsp = {
 				enabled = true,
@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function()
-		vim.api.nvim_command(":packadd yanky.nvim")
+		vim.cmd.packadd("yanky.nvim")
 		require('yanky').setup({
 			ring = {
 				history_length = 20,
