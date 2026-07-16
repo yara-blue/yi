@@ -4,7 +4,7 @@ local g = vim.g
 
 -- global options
 o.clipboard = "unnamedplus" -- by default copy/past to/from sys clipboard
-o.shortmess = "" -- useful for debug handlers/autocommands
+o.shortmess = "at" -- avoid all the 'hit-enter' prompts
 o.ignorecase = true --ignore case in search
 o.smartcase = true --except when I put a capital in the query
 o.incsearch = true --highlight all matches:
