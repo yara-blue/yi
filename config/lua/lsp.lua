@@ -11,19 +11,27 @@ vim.lsp.config("vale-ls", {
 )
 -- vim.lsp.enable("vale-ls")
 vim.lsp.enable("codebook")
+
+vim.lsp.config("openscad-lsp", {
+	cmd = { "openscad-lsp" },
+	root_marker = { '.git', '.scad' },
+	filetypes = { '.scad' },
+})
+vim.lsp.enable("openscad-lsp")
+
 vim.lsp.enable("tinymist")
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("nixd")
 vim.lsp.config("typos-lsp", {
 	cmd = { "typos-lsp" },
     init_options = {
-  --       -- Custom config. Used together with a config file found in 
+  --       -- Custom config. Used together with a config file found in
 		-- -- the workspace or its parents,
   --       -- taking precedence for settings declared in both.
   --       -- Equivalent to the typos `--config` cli argument.
   --       config = '~/code/typos-lsp/crates/typos-lsp/tests/typos.toml',
 		-- How typos are rendered in the editor, can be one of an Error,
-		-- Warning, Info or Hint. 
+		-- Warning, Info or Hint.
 		-- Defaults to Info.
         diagnosticSeverity = "Hint"
     }
@@ -37,7 +45,7 @@ local function config_and_enable()
 	local existing_on_attach = (vim.lsp.config['rust-analyzer'] or {}).on_attach
 	-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 	-- capabilities.textDocument.completion.completionItem.snippetSupport = true
-	
+
 	vim.lsp.config('rust-analyzer', {
 		cmd = { "rust-analyzer" },
 		root_markers = { 'Cargo.toml' },
@@ -45,12 +53,15 @@ local function config_and_enable()
 		-- capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
-				assist = {
-					importMergeBehavior = "module",
-					importGranularity = "module",
+				imports = {
+					granularity = {
+						group = "module",
+					},
 				},
 				cargo = {
-					loadOutDirsFromCheck = true,
+					buildScripts = {
+						enable = true,
+					},
 				},
 				procMacro = {
 					enable = true,
@@ -61,11 +72,11 @@ local function config_and_enable()
 		-- https://github.com/neovim/neovim/issues/33577#issuecomment-3568292351,
 		-- this does not work, no idea why. Better way to do this is on the way
 		-- though!
-	-- 	on_init = function(client) 
+	-- 	on_init = function(client)
 	-- 		local workspace = vim.fs.root(0, 'x.py')
-	-- 		if workspace == nil then 
+	-- 		if workspace == nil then
 	-- 			-- not rustc return
-	-- 			return 
+	-- 			return
 	-- 		end
 	--
 	-- 		print("Rustc codebase, re-configuring LSP to use x.py")
@@ -86,15 +97,15 @@ local function config_and_enable()
 	-- 					"x",
 	-- 					"check",
 	-- 					"compiler",
-	-- 					"--build-dir", 
+	-- 					"--build-dir",
 	-- 					"build-rust-analyzer",
 	-- 					"--json-output"
 	-- 				},
 	-- 			},
 	-- 			rustfmt = {
-	-- 				overrideCommand = { 
-	-- 					"build/host/rustfmt/bin/rustfmt", 
-	-- 					"--edition=2024" 
+	-- 				overrideCommand = {
+	-- 					"build/host/rustfmt/bin/rustfmt",
+	-- 					"--edition=2024"
 	-- 				},
 	-- 			},
 	-- 			procMacro = {
@@ -141,9 +152,9 @@ function M.setup_rustc_dev()
 	-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 	local workspace = vim.fs.root(0, 'x.py')
-	if workspace == nil then 
+	if workspace == nil then
 		print("ERROR: could not find rust compiler/std workspace")
-		return 
+		return
 	end
 
 	print(workspace)
@@ -174,15 +185,15 @@ function M.setup_rustc_dev()
 						"x",
 						"check",
 						"compiler",
-						"--build-dir", 
+						"--build-dir",
 						"build-rust-analyzer",
 						"--json-output"
 					},
 				},
 				rustfmt = {
-					overrideCommand = { 
-						"build/host/rustfmt/bin/rustfmt", 
-						"--edition=2024" 
+					overrideCommand = {
+						"build/host/rustfmt/bin/rustfmt",
+						"--edition=2024"
 					},
 				},
 				procMacro = {
@@ -229,28 +240,39 @@ function M.add_flag_to_rust_analyzer(features)
 		cmd = { "rust-analyzer" },
 		root_markers = { 'Cargo.toml' },
 		filetypes = { 'rust' },
-		capabilities = capabilities,
+		-- capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
-				assist = {
-					importMergeBehavior = "module",
-					importGranularity = "module",
+				imports = {
+					granularity = {
+						group = "module",
+					},
 				},
 				cargo = {
-					loadOutDirsFromCheck = true,
+					buildScripts = {
+						enable = true,
+					},
 					features = features,
 				},
 				procMacro = {
 					enable = true,
 				},
 			},
-		}
+		},
+		-- highlights (including dead code greyout) survive lsp restart. So we refresh
+		on_attach = function(_, bufnr)
+			vim.schedule(function()
+				pcall(vim.lsp.semantic_tokens.force_refresh, bufnr)
+			end)
+		end,
 	})
 
-	vim.api.nvim_command('LspRestart')
+	-- lsp restart does not update the config
+	vim.lsp.enable('rust-analyzer', false)
+	vim.lsp.enable('rust-analyzer', true)
 end
 
-function M.list_crate_features() 
+function M.list_crate_features()
 	local shell_cmd = [[cat Cargo.toml | rg "name\s*=\s*\"(.+?)\"" -r '$1' | head -n 1]]
 	local crate = vim.system({"sh", "-c", shell_cmd}):wait()
 	local crate = crate.stdout:sub(1, -2)
@@ -262,13 +284,12 @@ function M.list_crate_features()
 	local out = vim.split(out[1], "\n")
 
 	local features = {}
-	for i, feature in ipairs(out) do 
+	for i, feature in ipairs(out) do
 		if not vim.startswith(feature, " +") then
 			features[#features+1] = string.match(out[i], '[^ ]+', 2)
 		end
 	end
 
-	print(vim.inspect(features))
 	return features
 end
 

@@ -41,7 +41,7 @@ vim.api.nvim_create_user_command(
 	function(opts) require("lsp").add_flag_to_rust_analyzer(opts.fargs) end,
 	{ 
 		nargs = 1,
-		complete = function() require("lsp").list_crate_features() end,
+		complete = function() return require("lsp").list_crate_features() end,
 		desc = "adds a feature flag to rust-analyzer's config and restarts it" 
 	}
 )

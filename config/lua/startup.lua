@@ -49,17 +49,17 @@ local function setup_buffer(conf, state)
 	bo.modifiable = false
 
 	local wo = vim.wo
-	wo.wrap = false
-	wo.colorcolumn = ""
-	wo.foldlevel = 999
-	wo.foldcolumn = "0"
-	wo.cursorcolumn = false
-	wo.cursorline = false
-	wo.number = false
-	wo.relativenumber = false
-	wo.list = false
-	wo.spell = false
-	wo.signcolumn = "no"
+	-- wo.wrap = false
+	-- wo.colorcolumn = ""
+	-- wo.foldlevel = 999
+	-- wo.foldcolumn = "0"
+	-- wo.cursorcolumn = false
+	-- wo.cursorline = false
+	-- wo.number = false
+	-- wo.relativenumber = false
+	-- wo.list = false
+	-- wo.spell = false
+	-- wo.signcolumn = "no"
 
 	local opt = vim.opt_local
 	opt.matchpairs = {}
@@ -87,6 +87,21 @@ local function most_recently_used(max_cwd, max_global)
 	return cwd_mru, global
 end
 
+local function open_at_last_pos(path)
+  local bufnr = vim.fn.bufadd(path)
+  vim.fn.bufload(bufnr)
+  vim.api.nvim_win_set_buf(0, bufnr)
+
+  local mark = vim.api.nvim_buf_get_mark(bufnr, '"')
+  local lcount = vim.api.nvim_buf_line_count(bufnr)
+
+  if mark[1] > 0 and mark[1] <= lcount then
+    pcall(vim.api.nvim_win_set_cursor, 0, mark)
+  end
+
+  return bufnr
+end
+
 local function draw()
 	local text = {
 		"[q]: Quit",
@@ -106,13 +121,13 @@ local function draw()
 	local cwd, global = most_recently_used(#cwd_keys, #global_keys)
 	for i = 1, math.min(#cwd, #cwd_keys) do
 		text[#text+1] = "["..cwd_keys[i].."]: "..cwd[i]
-		vim.keymap.set("n", cwd_keys[i], "<Cmd>edit "..cwd[i].."<CR>" , {buffer = 0})
+		vim.keymap.set("n", cwd_keys[i], function() open_at_last_pos(cwd[i]) end, {buffer = 0})
 	end
 	text[#text+1] = ""
 	text[#text+1] = "MRU global"
 	for i = 1, math.min(#global, #global_keys) do
 		text[#text+1] = "["..global_keys[i].."]: "..global[i]
-		vim.keymap.set("n", global_keys[i], "<Cmd>edit "..global[i].."<CR>" , {buffer = 0})
+		vim.keymap.set("n", global_keys[i], function() open_at_last_pos(global[i]) end, {buffer = 0})
 	end  
 
 	vim.bo.modifiable = true

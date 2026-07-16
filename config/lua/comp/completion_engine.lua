@@ -6,8 +6,17 @@ require('blink.cmp').setup({
 	fuzzy = { implementation = "prefer_rust_with_warning" },
 	cmdline = {
 	  keymap = { preset = 'inherit' },
-	  completion = { menu = { auto_show = true } },
+	  completion = { 
+		  menu = { auto_show = true } ,
+	  },
 	},
+
+	completion = { 
+		  menu = { auto_show = true } ,
+		  documentation = {
+			  auto_show = true,
+		  },
+	  },
 	sources = {
 		default = { "lsp", "path", "buffer", "snippets", "yank" },
 		providers = {
@@ -16,5 +25,8 @@ require('blink.cmp').setup({
 				module = "blink-yanky",
 			},
 		},
+	},
+	keymap = {
+		['<Right>'] = { 'select_and_accept', 'fallback' },
 	},
 })

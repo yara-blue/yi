@@ -10,6 +10,7 @@ require("theme")
 require("looks")
 require("gui_tools")
 require("text_tools")
+require("lang_specifics")
 require("treesitter")
 require("comp") -- completions and snippets
 

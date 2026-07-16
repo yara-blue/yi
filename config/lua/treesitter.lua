@@ -51,9 +51,9 @@ require("treesitter-context").setup{
 	}
 }
 
-vim.api.nvim_create_autocmd("BufRead", {
-	once = true,
-	callback = function() 
-		vim.treesitter.start()
-	end
-})
+-- vim.api.nvim_create_autocmd("BufRead", {
+-- 	once = true,
+-- 	callback = function() 
+-- 		vim.treesitter.start()
+-- 	end
+-- })
