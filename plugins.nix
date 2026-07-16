@@ -25,7 +25,6 @@ pkgs.lib.unique (foldPlugins [
   lualine-nvim
   lualine-lsp-progress
   nvim-web-devicons
-  vim-startify
   vim-jjdescription
   mini-base16
 

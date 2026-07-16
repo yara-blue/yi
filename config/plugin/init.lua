@@ -19,5 +19,8 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 	once = true
 })
+
+require("startup")
+
 -- require("lsp")
 -- require("debuggers") -- debugger adapter

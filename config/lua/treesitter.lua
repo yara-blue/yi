@@ -1,5 +1,13 @@
-vim.wo.foldmethod = "expr"
-vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
+-- setting this triggers a bunch of treesitter things that 
+-- are _very_ slow. It adds 20ms to startup.
+vim.api.nvim_create_autocmd("BufReadPost", {
+    callback = function()
+        vim.defer_fn(function()
+            vim.opt.foldmethod = "expr"
+            vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+        end, 100)
+    end,
+})
 
 require("nvim-treesitter-textobjects").setup {
 	select = {
