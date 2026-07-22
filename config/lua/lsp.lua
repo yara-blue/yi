@@ -260,16 +260,35 @@ function M.add_flag_to_rust_analyzer(features)
 			},
 		},
 		-- highlights (including dead code greyout) survive lsp restart. So we refresh
-		on_attach = function(_, bufnr)
-			vim.schedule(function()
-				pcall(vim.lsp.semantic_tokens.force_refresh, bufnr)
-			end)
-		end,
+		-- on_attach = function(_, bufnr)
+		-- 	vim.schedule(function()
+		-- 		pcall(vim.lsp.semantic_tokens.force_refresh, bufnr)
+		-- 	end)
+		-- end,
 	})
+
+
+	-- lsp stop (via disable) does not remove the diagnostics
+	local ra = find_rust_analyzer()
+	ra:stop()
 
 	-- lsp restart does not update the config
 	vim.lsp.enable('rust-analyzer', false)
-	vim.lsp.enable('rust-analyzer', true)
+
+	vim.defer_fn(function() 
+		ra:stop() -- second stop kills it in case it hasn't died yet
+		vim.lsp.enable('rust-analyzer', true)
+	end, 2000)
+end
+
+function find_rust_analyzer() 
+	local clients = vim.lsp.get_clients()
+	for _, client in ipairs(clients) do
+		if client.name == 'rust-analyzer' then
+			return client
+		end
+	end
+	return nil
 end
 
 function M.list_crate_features()
