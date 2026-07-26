@@ -73,7 +73,7 @@ local function most_recently_used(max_cwd, max_global)
 
 	for i=1, math.min(#vim.v.oldfiles, 200) do
 		local path = vim.v.oldfiles[i]
-		if vim.startswith(path, cwd) then
+		if vim.startswith(path, cwd .. "/") then
 			cwd_mru[#cwd_mru+1] = path
 		else
 			global[#global+1] = path
