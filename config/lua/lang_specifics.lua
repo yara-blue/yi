@@ -1,16 +1,3 @@
-
--- Lazy load openscad-nvim
--- BufRead since this plugin _adds_ the filetype
-vim.api.nvim_create_autocmd("BufRead", {
-	once = true,
-	pattern = "*.scad",
-	callback = function()
-		vim.cmd.packadd("openscad.nvim")
-		vim.g.openscad_load_snippets =true
-		require("openscad")
-	end
-})
-
 -- Lazy load typst-preview
 vim.api.nvim_create_autocmd("FileType", {
 	once = true,

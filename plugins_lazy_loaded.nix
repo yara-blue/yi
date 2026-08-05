@@ -28,7 +28,6 @@ pkgs.lib.unique (foldPlugins [
   yanky-nvim
 
   typst-preview-nvim
-  openscad-nvim
 
   # Nouns, Verbs, textobjects
   nvim-surround
