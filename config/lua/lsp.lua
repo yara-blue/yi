@@ -33,6 +33,10 @@ local function we_are_rustc()
 	return vim.fs.root(0, "x.py") ~= nil 
 end
 
+local function we_are_rust()
+	return vim.fs.root(0, "Cargo.toml") ~= nil 
+end
+
 local function rustc_settings()
 	return {
 		linkedProjects = {
@@ -102,7 +106,7 @@ local function config_and_enable()
 		root_dir = function(bufnr, on_dir)
 			if we_are_rustc() then
 				on_dir(vim.fs.root(bufnr, {"x.py"}))
-			else 
+			elseif we_are_rust() then
 				on_dir(vim.fs.root(bufnr, {"Cargo.toml"}))
 			end
 		end,
