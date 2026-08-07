@@ -26,7 +26,7 @@ require("looks")
 require("gui_tools")
 require("text_tools")
 require("lang_specifics")
--- require("treesitter")
+require("treesitter")
 require("comp") -- completions and snippets
 
 vim.api.nvim_create_autocmd("BufReadPost", {
