@@ -9,7 +9,10 @@ vim.g.mapleader = " "
 func.apply_custom_remaps()
 
 -- switch to prev buffer
-vim.keymap.set('n', "<leader><leader>", "<C-^>")
+vim.keymap.set('n', "<leader><leader>", "<cmd>bnext<CR>", {
+	silent = true,
+	nowait =true,
+})
 
 -- yank till end of line
 vim.keymap.set('n', "Y", "y$")
