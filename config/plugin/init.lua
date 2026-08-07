@@ -4,6 +4,21 @@ require("settings")
 require("maps")
 require("commands")
 
+require("snacks").setup({
+	profiler = {
+		enabled = true,
+	},
+})
+
+vim.api.nvim_create_user_command(
+	"ToggleProfiler",
+	function(opts) Snacks.toggle.profiler():toggle() end,
+	{ 
+		nargs = 0,
+		desc = "Start the profiler, run again to stop then the trace will show up" 
+	}
+)
+
 -- -- these files mirrors those in the plugin file
 -- -- and contain configurations
 require("theme")
@@ -11,7 +26,7 @@ require("looks")
 require("gui_tools")
 require("text_tools")
 require("lang_specifics")
-require("treesitter")
+-- require("treesitter")
 require("comp") -- completions and snippets
 
 vim.api.nvim_create_autocmd("BufReadPost", {

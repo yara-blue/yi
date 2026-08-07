@@ -30,7 +30,7 @@ pkgs.lib.unique (foldPlugins [
   nvim-lint
   which-key-nvim
 
-  # Text tools
+  snacks-nvim
 
   # Other
   leap-nvim # lazy loads itself
