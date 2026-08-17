@@ -49,17 +49,17 @@ local function setup_buffer(conf, state)
 	bo.modifiable = false
 
 	local wo = vim.wo
-	-- wo.wrap = false
-	-- wo.colorcolumn = ""
-	-- wo.foldlevel = 999
-	-- wo.foldcolumn = "0"
-	-- wo.cursorcolumn = false
-	-- wo.cursorline = false
-	-- wo.number = false
-	-- wo.relativenumber = false
-	-- wo.list = false
-	-- wo.spell = false
-	-- wo.signcolumn = "no"
+	wo.wrap = false
+	wo.colorcolumn = ""
+	wo.foldlevel = 999
+	wo.foldcolumn = "0"
+	wo.cursorcolumn = false
+	wo.cursorline = false
+	wo.number = false
+	wo.relativenumber = false
+	wo.list = false
+	wo.spell = false
+	wo.signcolumn = "no"
 
 	local opt = vim.opt_local
 	opt.matchpairs = {}
@@ -71,8 +71,19 @@ local function most_recently_used(max_cwd, max_global)
 	local cwd_mru = {}
 	local global = {}
 
-	for i=1, math.min(#vim.v.oldfiles, 200) do
-		local path = vim.v.oldfiles[i]
+	local oldfiles = vim.tbl_map(function(path)
+	  local stat = vim.uv.fs_stat(path)
+	  return { 
+		  path = path, 
+		  mtime = stat and stat.mtime.sec or 0 
+	  }
+	end, vim.v.oldfiles)
+	table.sort(oldfiles, function (a, b)
+		return a.mtime > b.mtime
+	end)
+
+	for i=1, math.min(#oldfiles, 200) do
+		local path = oldfiles[i].path
 		if vim.startswith(path, cwd .. "/") then
 			cwd_mru[#cwd_mru+1] = path
 		else
@@ -92,14 +103,32 @@ local function open_at_last_pos(path)
   vim.fn.bufload(bufnr)
   vim.api.nvim_win_set_buf(0, bufnr)
 
-  local mark = vim.api.nvim_buf_get_mark(bufnr, '"')
-  local lcount = vim.api.nvim_buf_line_count(bufnr)
+  -- The row count starts at one and the column
+  -- count starts at zero, because why not...
+  local function saturate_at_end_of_file(jump) 
+	  local lcount = vim.api.nvim_buf_line_count(bufnr)
+	  if jump.lnum > lcount then
+		  return {lcount, 0}
+	  end
 
-  if mark[1] > 0 and mark[1] <= lcount then
-    pcall(vim.api.nvim_win_set_cursor, 0, mark)
+	  local out_of_bounds_is_error = true;
+	  local lines = vim.api.nvim_buf_get_lines(
+		  bufnr, 
+		  jump.lnum - 1, 
+		  jump.lnum, 
+		  out_of_bounds_is_error
+	  )
+	  local col_count = #lines[1]
+	  return {jump.lnum, math.min(jump.col, col_count)}
   end
 
-  return bufnr
+  local jumps = vim.fn.getjumplist()[1]
+  for _, jump in ipairs(jumps) do 
+	  if jump.bufnr == bufnr then
+		  vim.api.nvim_win_set_cursor(0, saturate_at_end_of_file(jump))
+		  return;
+	  end
+  end
 end
 
 local function draw()
