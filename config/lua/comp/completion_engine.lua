@@ -27,6 +27,6 @@ require('blink.cmp').setup({
 		},
 	},
 	keymap = {
-		['<Right>'] = { 'select_and_accept', 'fallback' },
+		['<Enter>'] = { 'select_and_accept', 'fallback' },
 	},
 })
