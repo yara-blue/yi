@@ -70,10 +70,12 @@ local function setup_buffer(conf, state)
 	opt.synmaxcol = 0
 end
 
-local function most_recently_used(max_cwd, max_global)
+local function most_recently_used(target_cwd, target_home, target_system)
 	local cwd = vim.fn.getcwd();
 	local cwd_mru = {}
-	local global = {}
+	local home = vim.env.HOME
+	local home_mru = {}
+	local system_mru = {}
 
 	local oldfiles = vim.tbl_map(function(path)
 	  local stat = vim.uv.fs_stat(path)
@@ -86,26 +88,36 @@ local function most_recently_used(max_cwd, max_global)
 		return a.mtime > b.mtime
 	end)
 
+	print(home)
 	for i=1, math.min(#oldfiles, 200) do
 		local path = oldfiles[i].path
-		if vim.startswith(path, cwd .. "/") then
-			cwd_mru[#cwd_mru+1] = path
-		else
-			global[#global+1] = path
+		if path == "health://" then
+			goto continue
 		end
 
-		if #cwd_mru >= max_cwd and #global >= max_global then
+		if vim.startswith(path, cwd .. "/") then
+			cwd_mru[#cwd_mru+1] = path:sub(#cwd + 2)
+		elseif vim.startswith(path, home .. "/") then
+			home_mru[#home_mru+1] = path:sub(#home + 2)
+		else
+			system_mru[#system_mru+1] = path
+		end
+
+		if #cwd_mru >= target_cwd 
+			and #home_mru >= target_home 
+			and #system_mru >= target_system then
 			break
 		end
+
+		::continue::
 	end
 
-	return cwd_mru, global
+	return cwd_mru, home_mru, system_mru
 end
 
 local function open_at_last_pos(path)
   vim.cmd.edit(vim.fn.fnameescape(path))
   local pos = vim.api.nvim_buf_get_mark(0, '"')
-  print(vim.inspect(pos))
 
   if pos[1] > 0 and pos[1] <= vim.api.nvim_buf_line_count(0) then
     vim.api.nvim_win_set_cursor(0, pos)
@@ -124,21 +136,35 @@ local function draw()
 	local cwd_keys = {'a','r','s','t','1','2','3','4','5'}
 	-- home row right side then numbers (colemak layout)
 	-- also my 6+1 key is broken so skip that lmao
-	local global_keys = {'n','e','i','o','6','8','9','0'}
+	local home_keys = {'n','e','i','o','6','8','9','0'}
+	-- row above home row
+	local system_keys = {'q','w','f','p','l','u','y','/'}
 
 	text[#text+1] = ""
 	text[#text+1] = "MRU current working dir"
-	local cwd, global = most_recently_used(#cwd_keys, #global_keys)
-	for i = 1, math.min(#cwd, #cwd_keys) do
-		text[#text+1] = "["..cwd_keys[i].."]: "..cwd[i]
-		vim.keymap.set("n", cwd_keys[i], function() open_at_last_pos(cwd[i]) end, {buffer = 0})
+	local cwd_mru, home_mru, system_mru = most_recently_used(#cwd_keys, #home_keys, #system_keys)
+	for i = 1, math.min(#cwd_mru, #cwd_keys) do
+		text[#text+1] = "["..cwd_keys[i].."]: "..cwd_mru[i]
+		vim.keymap.set("n", cwd_keys[i], function() open_at_last_pos(cwd_mru[i]) end, {buffer = 0})
 	end
-	text[#text+1] = ""
-	text[#text+1] = "MRU global"
-	for i = 1, math.min(#global, #global_keys) do
-		text[#text+1] = "["..global_keys[i].."]: "..global[i]
-		vim.keymap.set("n", global_keys[i], function() open_at_last_pos(global[i]) end, {buffer = 0})
-	end  
+
+	if #home_mru > 0 then 
+		text[#text+1] = ""
+		text[#text+1] = "MRU home"
+		for i = 1, math.min(#home_mru, #home_keys) do
+			text[#text+1] = "["..home_keys[i].."]: "..home_mru[i]
+			vim.keymap.set("n", home_keys[i], function() open_at_last_pos(home_mru[i]) end, {buffer = 0})
+		end  
+	end
+
+	if #system_mru > 0 then
+		text[#text+1] = ""
+		text[#text+1] = "MRU system"
+		for i = 1, math.min(#system_mru, #system_keys) do
+			text[#text+1] = "["..system_keys[i].."]: "..system_mru[i]
+			vim.keymap.set("n", system_keys[i], function() open_at_last_pos(system_mru[i]) end, {buffer = 0})
+		end  
+	end
 
 	vim.bo.modifiable = true
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, text)
