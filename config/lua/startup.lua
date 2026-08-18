@@ -48,18 +48,22 @@ local function setup_buffer(conf, state)
 	bo.filetype = ""
 	bo.modifiable = false
 
+	
 	local wo = vim.wo
-	wo.wrap = false
-	wo.colorcolumn = ""
-	wo.foldlevel = 999
-	wo.foldcolumn = "0"
-	wo.cursorcolumn = false
-	wo.cursorline = false
-	wo.number = false
-	wo.relativenumber = false
-	wo.list = false
-	wo.spell = false
-	wo.signcolumn = "no"
+	-- TODO redo this but then in a callback set them up again or something?
+	-- seems a lot of effort for no real gain though
+	
+	-- wo.wrap = false
+	-- wo.colorcolumn = ""
+	-- wo.foldlevel = 999
+	-- wo.foldcolumn = "0"
+	-- wo.cursorcolumn = false
+	-- wo.cursorline = false
+	-- wo.number = false
+	-- wo.relativenumber = false
+	-- wo.list = false
+	-- wo.spell = false
+	-- wo.signcolumn = "no"
 
 	local opt = vim.opt_local
 	opt.matchpairs = {}
@@ -99,35 +103,12 @@ local function most_recently_used(max_cwd, max_global)
 end
 
 local function open_at_last_pos(path)
-  local bufnr = vim.fn.bufadd(path)
-  vim.fn.bufload(bufnr)
-  vim.api.nvim_win_set_buf(0, bufnr)
+  vim.cmd.edit(vim.fn.fnameescape(path))
+  local pos = vim.api.nvim_buf_get_mark(0, '"')
+  print(vim.inspect(pos))
 
-  -- The row count starts at one and the column
-  -- count starts at zero, because why not...
-  local function saturate_at_end_of_file(jump) 
-	  local lcount = vim.api.nvim_buf_line_count(bufnr)
-	  if jump.lnum > lcount then
-		  return {lcount, 0}
-	  end
-
-	  local out_of_bounds_is_error = true;
-	  local lines = vim.api.nvim_buf_get_lines(
-		  bufnr, 
-		  jump.lnum - 1, 
-		  jump.lnum, 
-		  out_of_bounds_is_error
-	  )
-	  local col_count = #lines[1]
-	  return {jump.lnum, math.min(jump.col, col_count)}
-  end
-
-  local jumps = vim.fn.getjumplist()[1]
-  for _, jump in ipairs(jumps) do 
-	  if jump.bufnr == bufnr then
-		  vim.api.nvim_win_set_cursor(0, saturate_at_end_of_file(jump))
-		  return;
-	  end
+  if pos[1] > 0 and pos[1] <= vim.api.nvim_buf_line_count(0) then
+    vim.api.nvim_win_set_cursor(0, pos)
   end
 end
 
