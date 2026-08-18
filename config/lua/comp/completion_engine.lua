@@ -5,7 +5,7 @@ require('blink.cmp').setup({
 	snippets = { preset = 'luasnip' },
 	fuzzy = { implementation = "prefer_rust_with_warning" },
 	cmdline = {
-	  keymap = { preset = 'inherit' },
+	  keymap = { preset = 'cmdline' },
 	  completion = { 
 		  menu = { auto_show = true } ,
 	  },
