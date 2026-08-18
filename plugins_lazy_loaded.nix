@@ -13,7 +13,6 @@ in
 with pkgs.vimPlugins;
 pkgs.lib.unique (foldPlugins [
   blink-cmp
-  blink-cmp-yanky
 
   plenary-nvim # dependency of telescope-nvim
   telescope-nvim
@@ -25,7 +24,6 @@ pkgs.lib.unique (foldPlugins [
 
   crates-nvim
   comment-nvim
-  yanky-nvim
 
   typst-preview-nvim
 

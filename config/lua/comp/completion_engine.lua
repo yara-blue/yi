@@ -1,5 +1,4 @@
 vim.cmd.packadd("blink.cmp")
-vim.cmd.packadd("blink-cmp-yanky")
 
 require('blink.cmp').setup({
 	snippets = { preset = 'luasnip' },
@@ -18,13 +17,7 @@ require('blink.cmp').setup({
 		  },
 	  },
 	sources = {
-		default = { "lsp", "path", "buffer", "snippets", "yank" },
-		providers = {
-			yank = {
-				name = "yank",
-				module = "blink-yanky",
-			},
-		},
+		default = { "lsp", "path", "buffer", "snippets" },
 	},
 	keymap = {
 		['<Enter>'] = { 'select_and_accept', 'fallback' },
