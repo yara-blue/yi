@@ -16,6 +16,18 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end),
 })
 
+-- highlight any yank
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "highlight copy",
+  group = vim.api.nvim_create_augroup("hl-yank", { clear = true }),
+  callback = function()
+    vim.highlight.on_yank({
+      higroup = "IncSearch",
+      timeout = 150,
+    })
+  end,
+})
+
 local M = {}
 
 local function lsp_name()
