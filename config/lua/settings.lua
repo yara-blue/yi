@@ -3,7 +3,6 @@ local wo = vim.wo
 local g = vim.g
 
 -- global options
-o.clipboard = "unnamedplus" -- by default copy/past to/from sys clipboard
 o.shortmess = "at" -- avoid all the 'hit-enter' prompts
 o.ignorecase = true --ignore case in search
 o.smartcase = true --except when I put a capital in the query
@@ -42,6 +41,20 @@ o.termguicolors = true
 
 -- file specific
 g.tex_flavor = "latex"
+
+function has_ui_clipboard()
+	return vim.fn.executable("wl-copy") == 1
+		or vim.fn.executable("xclip") == 1
+		or vim.fn.executable("xsel") == 1
+		or vim.fn.executable("pbcopy") == 1
+end
+-- clipboard
+-- Vim should detect this automatically but it does not
+-- I have no clue why. This fixes it though...
+if not has_ui_clipboard() then
+  vim.g.clipboard = "osc52" -- copy/paste over ssh via terminal escape codes
+end
+vim.opt.clipboard = "unnamedplus" -- copy paste always to system clipboard
 
 -- undo
 local undodir = vim.env.HOME .. "/.vimdid"
